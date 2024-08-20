@@ -1,20 +1,21 @@
-// src/reducer.ts
 type Action =
   | { type: "ADD_GUESS"; guess: string }
   | { type: "DELETE_GUESS" }
-  | { type: "SUBMIT_GUESS" };
-//   | { type: "RESET" }
-//   | { type: "SET_WORD"; word: string };
+  | { type: "SUBMIT_GUESS" }
+  | { type: "RESET" };
+
 
 interface State {
   word: string;
   guesses: string[];
-  isCorrect: boolean; // 猜測狀態（例如 "correct", "incorrect"）
+  guessedWords: string[];
+  isCorrect: boolean;
 }
 
 const initialState: State = {
   word: "DELAY",
   guesses: [],
+  guessedWords: [],
   isCorrect: false,
 };
 
@@ -25,15 +26,20 @@ const reducer = (state: State, action: Action): State => {
     case "DELETE_GUESS":
       return { ...state, guesses: state.guesses.slice(0, -1) };
     case "SUBMIT_GUESS": {
-      const lastGuess = state.guesses.join("");
-      const isCorrect = lastGuess === state.word;
-      console.log(lastGuess);
-      return { ...state, isCorrect };
+      const guessLength = 5;
+      const currentGuess = state.guesses.slice(-guessLength).join("");
+      const isCorrect = currentGuess === state.word;
+      console.log(currentGuess);
+      console.log("已經猜了" + (state.guessedWords.length + 1) + "次");
+      return {
+        ...state,
+        guessedWords: [...state.guessedWords, currentGuess],
+        guesses: [],
+        isCorrect,
+      };
     }
-    // case "RESET":
-    //   return initialState;
-    // case "SET_WORD":
-    //   return { ...state, word: action.word };
+    case "RESET":
+      return initialState;
     default:
       return state;
   }

@@ -5,12 +5,6 @@ const Wordle: React.FC = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const guessesLengthRef = useRef<number>(0);
 
-  //   const guessWordArray = guessWord.toUpperCase().split("");
-
-  //   const setTargetWord = (word: string) => {
-  //     dispatch({ type: 'SET_WORD', word });
-  //   };
-
   useEffect(() => {
     guessesLengthRef.current = state.guesses.length;
   }, [state.guesses]);
@@ -29,7 +23,9 @@ const Wordle: React.FC = () => {
         console.log(currentGuessesLength)
       }
       else if (e.key === "Enter") {
-        dispatch({ type: "SUBMIT_GUESS" });
+        if(currentGuessesLength === 5){
+          dispatch({ type: "SUBMIT_GUESS" });
+        }
       }
     };
 
@@ -43,8 +39,13 @@ const Wordle: React.FC = () => {
   useEffect(() => {
     if (state.isCorrect) {
       alert("Correct");
+      dispatch({ type: "RESET" });
     }
-  }, [state.isCorrect]); 
+    else if(state.guessedWords.length === 6){
+      alert("Game Over");
+      dispatch({ type: "RESET" });
+    }
+  }, [state.guessedWords.length, state.isCorrect]); 
 
   return (
     <div className="flex flex-row flex-wrap justify-center content-center w-screen h-96 outline-dashed">
@@ -54,18 +55,32 @@ const Wordle: React.FC = () => {
           key={rowIndex}
           className="flex justify-center items-center mx-auto w-full gap-1 mb-1"
         >
-          {Array.from({ length: 5 }).map((_, colIndex) => (
-            <li
-              key={colIndex}
-              className="w-12 h-12 border-2 border-black text-center content-center text-4xl"
-            >
-              {state.guesses[rowIndex * 5 + colIndex] || ""}
-            </li>
-          ))}
+          {Array.from({ length: 5 }).map((_, colIndex) => {
+            const index = rowIndex * 5 + colIndex;
+            let displayValue = "";
+
+            if (index < state.guessedWords.length * 5) {
+              displayValue = state.guessedWords[rowIndex][colIndex] || "";
+            } else if (rowIndex === state.guessedWords.length && colIndex < state.guesses.length) {
+              displayValue = state.guesses[colIndex] || "";
+            }
+
+            return (
+              <li
+                key={colIndex}
+                className={`w-12 h-12 border-2 border-black text-center content-center text-4xl ${
+                  rowIndex < state.guessedWords.length ? 'bg-gray-200' : ''
+                }`}
+              >
+                {displayValue}
+              </li>
+            );
+          })}
         </ul>
       ))}
     </div>
   );
 };
+
 
 export default Wordle;
