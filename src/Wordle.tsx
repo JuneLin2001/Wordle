@@ -45,10 +45,21 @@ const Wordle: React.FC = () => {
         >
           {Array.from({ length: 5 }).map((_, colIndex) => {
             const guessedWord = state.guessedWords[rowIndex];
-            const displayValue = guessedWord?.guess[colIndex] || (rowIndex === state.guessedWords.length ? state.guesses[colIndex] || "" : "");
+            const displayValue =
+              guessedWord?.guess[colIndex] ||
+              (rowIndex === state.guessedWords.length
+                ? state.guesses[colIndex] || ""
+                : "");
 
             const color = guessedWord?.colors[colIndex] || "transparent";
-            const bgColor = color === "green" ? "bg-green-500" : color === "yellow" ? "bg-yellow-500" : "bg-gray-300";
+            const bgColor =
+              color === "green"
+                ? "bg-green-500"
+                : color === "yellow"
+                ? "bg-yellow-500"
+                : color === "gray"
+                ? "bg-gray-300"
+                : "bg-white";
 
             return (
               <li
