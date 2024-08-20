@@ -16,7 +16,6 @@ const Wordle: React.FC = () => {
   }, [state.guesses]);
 
   useEffect(() => {
-    // const guessWord = "METRO";
     const handleKeyDown = (e: KeyboardEvent) => {
       const currentGuessesLength = guessesLengthRef.current;
       if (e.key === "Backspace") {
