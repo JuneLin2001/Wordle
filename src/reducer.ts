@@ -35,30 +35,29 @@ const reducer = (state: State, action: Action): State => {
       const isCorrect = currentGuess === state.word;
 
       // Generate color codes for the guess
-      const colors = Array(guessLength).fill('gray'); // Default color for letters
-      const wordArray = state.word.split('');
-      const guessArray = currentGuess.split('');
+      const colors = Array(guessLength).fill("gray"); // Default color for letters
+      const wordArray = state.word.split("");
+      const guessArray = currentGuess.split("");
 
       // Mark correct positions
       guessArray.forEach((letter, index) => {
         if (letter === wordArray[index]) {
-          colors[index] = 'green';
+          colors[index] = "green";
           // wordArray[index] = ''; // Avoid marking the same letter again
-        }
-      });
-
-      // Mark incorrect positions but correct letters
-      guessArray.forEach((letter, index) => {
-        if (colors[index] !== 'green' && wordArray.includes(letter)) {
-          colors[index] = 'yellow';
+        } else if (colors[index] !== "green" && wordArray.includes(letter)) {
+          colors[index] = "yellow";
           // wordArray[wordArray.indexOf(letter)] = ''; // Avoid marking the same letter again
+        } else {
+          colors[index] = "gray";
         }
       });
-
       if (currentGuess.length === guessLength) {
         return {
           ...state,
-          guessedWords: [...state.guessedWords, { guess: currentGuess, colors }],
+          guessedWords: [
+            ...state.guessedWords,
+            { guess: currentGuess, colors },
+          ],
           guesses: [],
           isCorrect,
         };
