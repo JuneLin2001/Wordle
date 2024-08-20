@@ -1,7 +1,13 @@
 import Wordle from "./Wordle";
+import Header from "./Header";
 
 function App() {
-  return <Wordle />;
+  return (
+    <>
+      <Header />
+      <Wordle />
+    </>
+  );
 }
 
 export default App;

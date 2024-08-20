@@ -3,7 +3,12 @@ export default {
   content: [
     "./src/**/*.{js,jsx,ts,tsx}",
   ],  theme: {
-    extend: {},
+    extend: {
+      colors: {
+        'appworksschool': '#ff6b0f',
+        'appworksschool-light': '#ffc19b',
+      }
+    },
   },
   plugins: [],
 }
