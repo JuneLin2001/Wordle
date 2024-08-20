@@ -1,31 +1,21 @@
-import { useReducer, useEffect, useRef } from "react";
+import { useReducer, useEffect } from "react";
 import { reducer, initialState } from "./reducer";
 
 const Wordle: React.FC = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
-  const guessesLengthRef = useRef<number>(0);
-
-  useEffect(() => {
-    guessesLengthRef.current = state.guesses.length;
-  }, [state.guesses]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      const currentGuessesLength = guessesLengthRef.current;
       if (e.key === "Backspace") {
         dispatch({ type: "DELETE_GUESS" });
       } else if (
         e.key.length === 1 &&
-        e.key.match(/[a-z]/i) &&
-        currentGuessesLength < 5
+        e.key.match(/[a-z]/i)
       ) {
         dispatch({ type: "ADD_GUESS", guess: e.key.toUpperCase() });
-        console.log(currentGuessesLength)
       }
       else if (e.key === "Enter") {
-        if(currentGuessesLength === 5){
           dispatch({ type: "SUBMIT_GUESS" });
-        }
       }
     };
 
