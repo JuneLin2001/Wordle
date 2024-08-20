@@ -78,6 +78,7 @@ const Wordle: React.FC = () => {
           })}
         </ul>
       ))}
+      <h2>Answer is {state.word}</h2>
     </div>
   );
 };
