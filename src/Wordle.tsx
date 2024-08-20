@@ -28,6 +28,9 @@ const Wordle: React.FC = () => {
         dispatch({ type: "ADD_GUESS", guess: e.key.toUpperCase() });
         console.log(currentGuessesLength)
       }
+      else if (e.key === "Enter") {
+        dispatch({ type: "SUBMIT_GUESS" });
+      }
     };
 
     window.addEventListener("keydown", handleKeyDown);
@@ -36,6 +39,12 @@ const Wordle: React.FC = () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, []);
+
+  useEffect(() => {
+    if (state.isCorrect) {
+      alert("Correct");
+    }
+  }, [state.isCorrect]); 
 
   return (
     <div className="flex flex-row flex-wrap justify-center content-center w-screen h-96 outline-dashed">

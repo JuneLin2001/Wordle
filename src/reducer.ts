@@ -9,7 +9,7 @@ type Action =
 interface State {
   word: string;
   guesses: string[];
-  isCorrect: boolean;       // 猜測狀態（例如 "correct", "incorrect"）
+  isCorrect: boolean; // 猜測狀態（例如 "correct", "incorrect"）
 }
 
 const initialState: State = {
@@ -24,11 +24,12 @@ const reducer = (state: State, action: Action): State => {
       return { ...state, guesses: [...state.guesses, action.guess] };
     case "DELETE_GUESS":
       return { ...state, guesses: state.guesses.slice(0, -1) };
-      case 'SUBMIT_GUESS': {
-        const lastGuess = state.guesses.join('');
-        const isCorrect = lastGuess === state.word;
-        return { ...state, isCorrect };
-      }
+    case "SUBMIT_GUESS": {
+      const lastGuess = state.guesses.join("");
+      const isCorrect = lastGuess === state.word;
+      console.log(lastGuess);
+      return { ...state, isCorrect };
+    }
     // case "RESET":
     //   return initialState;
     // case "SET_WORD":
