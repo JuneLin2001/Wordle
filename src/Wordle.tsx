@@ -8,7 +8,10 @@ const Wordle: React.FC = () => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Backspace") {
         dispatch({ type: "DELETE_GUESS" });
-      } else if (e.key.length === 1 && e.key.match(/[a-z]/i)) {
+      } else if (
+        e.key.length === 1 &&
+        e.key.match(/[a-z]/i)
+      ) {
         dispatch({ type: "ADD_GUESS", guess: e.key.toUpperCase() });
       } else if (e.key === "Enter") {
         dispatch({ type: "SUBMIT_GUESS" });
@@ -24,17 +27,13 @@ const Wordle: React.FC = () => {
 
   useEffect(() => {
     if (state.isCorrect) {
-      setTimeout(() => {
-        alert("Correct");
-        dispatch({ type: "RESET" });
-      }, 100);
-
+      alert("Correct");
+      dispatch({ type: "RESET" });
     } else if (state.guessedWords.length === 6) {
-      setTimeout(() => {
-        alert("Game Over");
-        dispatch({ type: "RESET" });
-      },100);
+      alert("Game Over");
+      dispatch({ type: "RESET" });
     }
+  }, [state.guessedWords.length, state.isCorrect]);
   }, [state.guessedWords.length, state.isCorrect]);
 
   return (
@@ -46,21 +45,10 @@ const Wordle: React.FC = () => {
         >
           {Array.from({ length: 5 }).map((_, colIndex) => {
             const guessedWord = state.guessedWords[rowIndex];
-            const displayValue =
-              guessedWord?.guess[colIndex] ||
-              (rowIndex === state.guessedWords.length
-                ? state.guesses[colIndex] || ""
-                : "");
+            const displayValue = guessedWord?.guess[colIndex] || (rowIndex === state.guessedWords.length ? state.guesses[colIndex] || "" : "");
 
             const color = guessedWord?.colors[colIndex] || "transparent";
-            const bgColor =
-              color === "green"
-                ? "bg-green-500"
-                : color === "yellow"
-                ? "bg-yellow-500"
-                : color === "gray"
-                ? "bg-gray-300"
-                : "bg-white";
+            const bgColor = color === "green" ? "bg-green-500" : color === "yellow" ? "bg-yellow-500" : "bg-gray-300";
 
             return (
               <li

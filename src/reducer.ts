@@ -34,22 +34,28 @@ const reducer = (state: State, action: Action): State => {
       const currentGuess = state.guesses.slice(-wordLength).join("");
       const isCorrect = currentGuess === state.word;
 
-      const colors = Array(wordLength).fill("gray");
+      // Generate color codes for the guess
+      const colors = Array(5).fill("gray"); // Default color for letters
       const wordArray = state.word.split("");
       const guessArray = currentGuess.split("");
 
+      // Mark correct positions
       guessArray.forEach((letter, index) => {
         if (letter === wordArray[index]) {
           colors[index] = "green";
-          // wordArray[index] = '';
-        } else if (colors[index] !== "green" && wordArray.includes(letter)) {
-          colors[index] = "yellow";
-          // wordArray[wordArray.indexOf(letter)] = '';
-        } else {
-          colors[index] = "gray";
+          // wordArray[index] = ''; // Avoid marking the same letter again
         }
       });
-      if (currentGuess.length === wordLength) {
+
+      // Mark incorrect positions but correct letters
+      guessArray.forEach((letter, index) => {
+        if (colors[index] !== "green" && wordArray.includes(letter)) {
+          colors[index] = "yellow";
+          // wordArray[wordArray.indexOf(letter)] = ''; // Avoid marking the same letter again
+        }
+      });
+
+      if (currentGuess.length === 5) {
         return {
           ...state,
           guessedWords: [
