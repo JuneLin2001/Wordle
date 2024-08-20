@@ -4,11 +4,10 @@ type Action =
   | { type: "SUBMIT_GUESS" }
   | { type: "RESET" };
 
-
 interface State {
   word: string;
   guesses: string[];
-  guessedWords: string[];
+  guessedWords: { guess: string; colors: string[] }[];
   isCorrect: boolean;
 }
 
@@ -22,35 +21,54 @@ const initialState: State = {
 const reducer = (state: State, action: Action): State => {
   switch (action.type) {
     case "ADD_GUESS":
-      if(state.guesses.length < 5){
-      return { ...state, guesses: [...state.guesses, action.guess] };
-    }
-    else{
-      return state
-    }
+      if (state.guesses.length < 5) {
+        return { ...state, guesses: [...state.guesses, action.guess] };
+      }
+      return state;
+
     case "DELETE_GUESS":
       return { ...state, guesses: state.guesses.slice(0, -1) };
+
     case "SUBMIT_GUESS": {
       const guessLength = 5;
       const currentGuess = state.guesses.slice(-guessLength).join("");
       const isCorrect = currentGuess === state.word;
-      console.log(currentGuess);
-      console.log("已經猜了" + (state.guessedWords.length + 1) + "次");
-      console.log(state.guessedWords);
-      if(currentGuess.length === 5){
-      return {
-        ...state,
-        guessedWords: [...state.guessedWords, currentGuess],
-        guesses: [],
-        isCorrect,
-      };
-    }
-    else{
+
+      // Generate color codes for the guess
+      const colors = Array(guessLength).fill('gray'); // Default color for letters
+      const wordArray = state.word.split('');
+      const guessArray = currentGuess.split('');
+
+      // Mark correct positions
+      guessArray.forEach((letter, index) => {
+        if (letter === wordArray[index]) {
+          colors[index] = 'green';
+          // wordArray[index] = ''; // Avoid marking the same letter again
+        }
+      });
+
+      // Mark incorrect positions but correct letters
+      guessArray.forEach((letter, index) => {
+        if (colors[index] !== 'green' && wordArray.includes(letter)) {
+          colors[index] = 'yellow';
+          // wordArray[wordArray.indexOf(letter)] = ''; // Avoid marking the same letter again
+        }
+      });
+
+      if (currentGuess.length === guessLength) {
+        return {
+          ...state,
+          guessedWords: [...state.guessedWords, { guess: currentGuess, colors }],
+          guesses: [],
+          isCorrect,
+        };
+      }
       return state;
     }
-    }
+
     case "RESET":
       return initialState;
+
     default:
       return state;
   }
