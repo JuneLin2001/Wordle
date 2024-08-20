@@ -12,5 +12,6 @@ trying make Wordle with React and TypeScript
 
 ## Roadmap
 - [x] 可以在第一行輸入、刪除英文字母
-- [ ] 可以按下 Enter 判斷結果、只有六次機會
+- [x] 可以按下 Enter 判斷結果、只有六次機會
+- [ ] 隨機加載題目
 
