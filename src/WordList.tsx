@@ -1,35 +1,29 @@
 import React, { useEffect } from "react";
-import { db } from "./firebase";
 import { collection, getDocs } from "firebase/firestore";
+import { db } from "./firebase";
 
 const WordList: React.FC = () => {
-  console.log([
-    import.meta.env.VITE_FIREBASE_API_KEY,
-    import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-    import.meta.env.VITE_FIREBASE_PROJECT_ID,
-    import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-    import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-    import.meta.env.VITE_FIREBASE_APP_ID,
-  ]);
-
   useEffect(() => {
-    getDocs(collection(db, "words"))
-      .then((querySnapshot) => {
+    const fetchWords = async () => {
+      try {
+        const querySnapshot = await getDocs(collection(db, "words"));
+        const wordList: string[] = [];
         querySnapshot.forEach((doc) => {
-          console.log(`${doc.id} => ${doc.data()}`);
+          const word = doc.data().answer;
+          if (word) {
+            wordList.push(word);
+          }
         });
-      })
-      .catch((error) => {
-        console.log("Error getting documents: ", error);
-      });
+        console.log("Fetched words:", wordList); // 在這裡進行所需操作
+      } catch (error) {
+        console.error("Error fetching words: ", error);
+      }
+    };
+
+    fetchWords();
   }, []);
 
-  return (
-    <>
-      <h1>WordList</h1>
-      <ul></ul>
-    </>
-  );
+  return null; // 不渲染任何內容
 };
 
 export default WordList;
