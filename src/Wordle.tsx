@@ -1,141 +1,77 @@
-import React, { useReducer, useEffect } from "react";
-
-// 定義 action 的型別
-type Action =
-  | { type: "ADD_GUESS"; guess: string }
-  | { type: "DELETE_GUESS" }
-  | { type: "SUBMIT_GUESS" }
-  | { type: "RESET" }
-  | { type: "SET_WORD"; word: string };
-
-// 定義 reducer 函數
-interface State {
-  word: string;
-  guesses: string[];
-  guessedWords: { guess: string; colors: string[] }[];
-  isCorrect: boolean;
-}
-
-const initialState: State = {
-  word: "APPLE", // 預設為示例單詞
-  guesses: [],
-  guessedWords: [],
-  isCorrect: false,
-};
-
-const reducer = (state: State, action: Action): State => {
-  switch (action.type) {
-    case "ADD_GUESS":
-      if (state.guesses.length < 5) {
-        return { ...state, guesses: [...state.guesses, action.guess] };
-      }
-      return state;
-
-    case "DELETE_GUESS":
-      return { ...state, guesses: state.guesses.slice(0, -1) };
-
-    case "SUBMIT_GUESS": {
-      const wordLength = 5;
-      const currentGuess = state.guesses.slice(-wordLength).join("");
-      const isCorrect = currentGuess === state.word;
-
-      const colors = Array(wordLength).fill("gray");
-      const wordArray = state.word.split("");
-      const guessArray = currentGuess.split("");
-
-      guessArray.forEach((letter, index) => {
-        if (letter === wordArray[index]) {
-          colors[index] = "green";
-        } else if (colors[index] !== "green" && wordArray.includes(letter)) {
-          colors[index] = "yellow";
-        } else {
-          colors[index] = "gray";
-        }
-      });
-
-      if (currentGuess.length === wordLength) {
-        return {
-          ...state,
-          guessedWords: [
-            ...state.guessedWords,
-            { guess: currentGuess, colors },
-          ],
-          guesses: [],
-          isCorrect,
-        };
-      }
-      return state;
-    }
-
-    case "RESET":
-      return initialState;
-
-    default:
-      return state;
-  }
-};
+import { useReducer, useEffect } from "react";
+import { reducer, initialState } from "./reducer";
 
 const Wordle: React.FC = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Backspace") {
+        dispatch({ type: "DELETE_GUESS" });
+      } else if (e.key.length === 1 && e.key.match(/[a-z]/i)) {
+        dispatch({ type: "ADD_GUESS", guess: e.key.toUpperCase() });
+      } else if (e.key === "Enter") {
+        dispatch({ type: "SUBMIT_GUESS" });
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
 
   useEffect(() => {
     if (state.isCorrect) {
       setTimeout(() => {
         alert("Correct");
         dispatch({ type: "RESET" });
-      }, 1000);
+      }, 100);
     } else if (state.guessedWords.length === 6) {
       setTimeout(() => {
         alert("Game Over");
         dispatch({ type: "RESET" });
-      }, 1000);
+      }, 100);
     }
-  }, [state.isCorrect, state.guessedWords]);
-
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
-    const key = e.key.toUpperCase();
-
-    if (key.length === 1 && /^[A-Z]$/.test(key)) {
-      dispatch({ type: "ADD_GUESS", guess: key });
-    } else if (key === "Backspace") {
-      dispatch({ type: "DELETE_GUESS" });
-    } else if (key === "Enter") {
-      dispatch({ type: "SUBMIT_GUESS" });
-    }
-  };
+  }, [state.guessedWords.length, state.isCorrect]);
 
   return (
-    <div
-      className="flex flex-wrap justify-center content-center w-screen h-96 outline-dashed"
-      tabIndex={0}
-      onKeyDown={handleKeyDown}
-    >
-      <h1>Wordle</h1>
-      {state.guessedWords.map((wordObj, rowIndex) => (
+    <div className="flex flex-row flex-wrap justify-center content-center w-screen h-96 outline-dashed">
+      {Array.from({ length: 6 }).map((_, rowIndex) => (
         <ul
           key={rowIndex}
           className="flex justify-center items-center mx-auto w-full gap-1 mb-1"
         >
-          {wordObj.guess.split("").map((letter, colIndex) => (
-            <li
-              key={colIndex}
-              className={`w-12 h-12 border-2 border-black text-center content-center text-4xl ${wordObj.colors[colIndex]}`}
-            >
-              {letter}
-            </li>
-          ))}
+          {Array.from({ length: 5 }).map((_, colIndex) => {
+            const guessedWord = state.guessedWords[rowIndex];
+            const displayValue =
+              guessedWord?.guess[colIndex] ||
+              (rowIndex === state.guessedWords.length
+                ? state.guesses[colIndex] || ""
+                : "");
+
+            const color = guessedWord?.colors[colIndex] || "transparent";
+            const bgColor =
+              color === "green"
+                ? "bg-green-500"
+                : color === "yellow"
+                ? "bg-yellow-500"
+                : color === "gray"
+                ? "bg-gray-300"
+                : "bg-white";
+
+            return (
+              <li
+                key={colIndex}
+                className={`w-12 h-12 border-2 border-black text-center content-center text-4xl ${bgColor}`}
+              >
+                {displayValue}
+              </li>
+            );
+          })}
         </ul>
       ))}
-      <ul className="flex justify-center items-center mx-auto w-full gap-1 mb-1">
-        {Array.from({ length: 5 }).map((_, colIndex) => (
-          <li
-            key={colIndex}
-            className="w-12 h-12 border-2 border-black text-center content-center text-4xl"
-          >
-            {state.guesses[colIndex] || ""}
-          </li>
-        ))}
-      </ul>
+      <h2>Answer is {state.word}</h2>
     </div>
   );
 };
