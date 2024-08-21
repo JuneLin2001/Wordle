@@ -40,7 +40,7 @@ const Wordle: React.FC = () => {
       {Array.from({ length: 6 }).map((_, rowIndex) => (
         <ul
           key={rowIndex}
-          className="flex justify-center items-center mx-auto w-full gap-1 mb-1"
+          className="flex justify-center items-center mx-auto w-full gap-1 mb-1 "
         >
           {Array.from({ length: 5 }).map((_, colIndex) => {
             const guessedWord = state.guessedWords[rowIndex];
@@ -63,7 +63,7 @@ const Wordle: React.FC = () => {
             return (
               <li
                 key={colIndex}
-                className={`w-12 h-12 border-2 border-black text-center content-center text-4xl ${bgColor}`}
+                className={`w-12 h-12 border-2 border-gray-300 text-black text-center content-center text-4xl ${bgColor}`}
               >
                 {displayValue}
               </li>

@@ -17,6 +17,13 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+body {
+  font-family: "Pixelify Sans", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: <weight>;
+  font-style: normal;
+}
+
 a {
   font-weight: 500;
   color: #646cff;
