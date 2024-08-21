@@ -1,8 +1,11 @@
+const answerDatabase = ["DELAY", "CATCH", "SLEEP", "SOLVE", "SPLIT"];
+
 type Action =
   | { type: "ADD_GUESS"; guess: string }
   | { type: "DELETE_GUESS" }
   | { type: "SUBMIT_GUESS" }
-  | { type: "RESET" };
+  | { type: "RESET" }
+  | { type: "SET_WORD"; word: string };
 
 interface State {
   word: string;
@@ -11,8 +14,13 @@ interface State {
   isCorrect: boolean;
 }
 
+function getRandomWord() {
+  const randomIndex = Math.floor(Math.random() * answerDatabase.length);
+  return answerDatabase[randomIndex];
+}
+
 const initialState: State = {
-  word: "DELAY",
+  word: getRandomWord(),
   guesses: [],
   guessedWords: [],
   isCorrect: false,
@@ -64,8 +72,10 @@ const reducer = (state: State, action: Action): State => {
     }
 
     case "RESET":
-      return initialState;
-
+      return {
+        ...initialState,
+        word: getRandomWord(),
+      };
     default:
       return state;
   }
