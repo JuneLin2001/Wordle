@@ -52,7 +52,7 @@ const reducer = (state: State, action: Action): State => {
           // wordArray[index] = '';
         } else if (colors[index] !== "green" && wordArray.includes(letter)) {
           colors[index] = "yellow";
-          // wordArray[wordArray.indexOf(letter)] = '';
+          // wordArray[wordArray.indexOf(letter)] = "";
         } else {
           colors[index] = "gray";
         }
