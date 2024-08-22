@@ -1,8 +1,20 @@
 import { useReducer, useEffect } from "react";
 import { reducer, initialState } from "./reducer";
+import { fetchWords } from "./WordList";
 
 const Wordle: React.FC = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
+
+  useEffect(() => {
+    async function getSolution() {
+      const solutionFromDb = await fetchWords();
+      if (solutionFromDb) {
+        dispatch({ type: "SET_WORD", word: solutionFromDb });
+      }
+    }
+
+    getSolution();
+  }, []);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
