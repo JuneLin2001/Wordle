@@ -3,28 +3,25 @@ type Action =
   | { type: "DELETE_GUESS" }
   | { type: "SUBMIT_GUESS" }
   | { type: "RESET" }
-  | { type: "SET_WORD"; word: string };
+  | { type: "SET_WORD"; word: string }
+  | { type: "SET_STATUS"; status: "won" | "lost" | "playing" };
 
 interface State {
   word: string;
   guesses: string[];
   guessedWords: { guess: string; colors: string[] }[];
-  isCorrect: boolean;
+  status: "won" | "lost" | "playing";
 }
 
 const initialState: State = {
   word: "",
   guesses: [],
   guessedWords: [],
-  isCorrect: false,
+  status: "playing",
 };
 
 const reducer = (state: State, action: Action): State => {
   switch (action.type) {
-    case "SET_WORD":
-      state.word = action.word;
-      return { ...state };
-
     case "ADD_GUESS":
       if (state.guesses.length < 5) {
         return { ...state, guesses: [...state.guesses, action.guess] };
@@ -37,8 +34,6 @@ const reducer = (state: State, action: Action): State => {
     case "SUBMIT_GUESS": {
       const wordLength = 5;
       const currentGuess = state.guesses.slice(-wordLength).join("");
-      const isCorrect = currentGuess === state.word;
-
       const colors = Array(wordLength).fill("gray");
       const wordArray = state.word.split("");
       const guessArray = currentGuess.split("");
@@ -46,15 +41,22 @@ const reducer = (state: State, action: Action): State => {
       guessArray.forEach((letter, index) => {
         if (letter === wordArray[index]) {
           colors[index] = "green";
-          // wordArray[index] = '';
         } else if (colors[index] !== "green" && wordArray.includes(letter)) {
           colors[index] = "yellow";
-          // wordArray[wordArray.indexOf(letter)] = "";
         } else {
           colors[index] = "gray";
         }
       });
+
+      let status = state.status;
       if (currentGuess.length === wordLength) {
+        const isCorrect = currentGuess === state.word;
+        status = isCorrect
+          ? "won"
+          : state.guessedWords.length + 1 >= 6
+          ? "lost"
+          : "playing";
+
         return {
           ...state,
           guessedWords: [
@@ -62,15 +64,20 @@ const reducer = (state: State, action: Action): State => {
             { guess: currentGuess, colors },
           ],
           guesses: [],
-          isCorrect,
+          status,
         };
       }
+
       return { ...state };
     }
     case "RESET":
       return {
         ...initialState,
       };
+    case "SET_WORD":
+      return { ...state, word: action.word };
+    case "SET_STATUS":
+      return { ...state, status: action.status };
     default:
       return state;
   }

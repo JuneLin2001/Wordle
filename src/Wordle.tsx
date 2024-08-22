@@ -5,17 +5,17 @@ import { fetchWords } from "./firebase";
 const Wordle: React.FC = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  useEffect(() => {
-    async function getSolution() {
-      const solutionFromDb = await fetchWords();
-      if (solutionFromDb) {
-        dispatch({ type: "SET_WORD", word: solutionFromDb });
-      }
-    }
-    return () => {
-      getSolution();
-    };
-  }, []);
+  // useEffect(() => {
+  //   async function getSolution() {
+  //     const solutionFromDb = await fetchWords();
+  //     if (solutionFromDb) {
+  //       dispatch({ type: "SET_WORD", word: solutionFromDb });
+  //     }
+  //   }
+  //   return () => {
+  //     getSolution();
+  //   };
+  // }, []);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -35,18 +35,27 @@ const Wordle: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (state.isCorrect) {
+    if (state.status === "won") {
       setTimeout(() => {
         alert("Correct");
         dispatch({ type: "RESET" });
       }, 100);
-    } else if (state.guessedWords.length === 6) {
+    } else if (state.status === "lost") {
       setTimeout(() => {
         alert("Game Over");
         dispatch({ type: "RESET" });
       }, 100);
     }
-  }, [state.guessedWords.length, state.isCorrect]);
+    async function getSolution() {
+      const solutionFromDb = await fetchWords();
+      if (solutionFromDb) {
+        dispatch({ type: "SET_WORD", word: solutionFromDb });
+      }
+    }
+    return () => {
+      getSolution();
+    };
+  }, [state.status]);
 
   return (
     <div className="flex flex-row flex-wrap justify-center content-center w-screen h-96 outline-dashed">
