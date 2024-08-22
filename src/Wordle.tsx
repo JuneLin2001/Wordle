@@ -12,6 +12,13 @@ const Wordle: React.FC = () => {
       const selectedAnswer = solutionFromDb[randomIndex];
       if (solutionFromDb) {
         dispatch({ type: "SET_WORD", word: selectedAnswer });
+        console.log(selectedAnswer);
+      } else {
+        const answerDatabase = ["DELAY", "CATCH", "SLEEP", "SOLVE", "SPLIT"];
+        const randomIndex = Math.floor(Math.random() * answerDatabase.length);
+        const selectedAnswer = answerDatabase[randomIndex];
+        dispatch({ type: "SET_WORD", word: selectedAnswer });
+        console.log(selectedAnswer);
       }
     }
 
@@ -85,12 +92,6 @@ const Wordle: React.FC = () => {
           })}
         </ul>
       ))}
-      <h2>
-        Answer is{" "}
-        <span className="bg-black text-black hover:text-white">
-          {state.word}
-        </span>
-      </h2>
     </div>
   );
 };
