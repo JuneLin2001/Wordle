@@ -1,12 +1,11 @@
 import { useReducer, useEffect } from "react";
 import { reducer, initialState } from "./reducer";
-import { fetchWords } from "./WordList";
+import { fetchWords } from "./firebase";
 
 const Wordle: React.FC = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   useEffect(() => {
-    console.log(import.meta.env.VITE_FIREBASE_API_KEY);
     async function getSolution() {
       const solutionFromDb = await fetchWords();
       if (solutionFromDb) {
@@ -56,6 +55,7 @@ const Wordle: React.FC = () => {
           key={rowIndex}
           className="flex justify-center items-center mx-auto w-full gap-1 mb-1 "
         >
+          {/* TODO:簡化邏輯 */}
           {Array.from({ length: 5 }).map((_, colIndex) => {
             const guessedWord = state.guessedWords[rowIndex];
             const displayValue =

@@ -1,6 +1,7 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getFirestore, Firestore } from "firebase/firestore";
+import { collection, getDocs } from "firebase/firestore";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -18,4 +19,23 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db: Firestore = getFirestore(app);
 
-export { db };
+export async function fetchWords() {
+  const querySnapshot = await getDocs(collection(db, "words"));
+
+  if (!querySnapshot.empty) {
+    const wordList: string[] = [];
+    querySnapshot.forEach((doc) => {
+      const word = doc.data().answer;
+      if (word) {
+        wordList.push(word);
+      }
+    });
+    const randomIndex = Math.floor(Math.random() * wordList.length);
+    const selectedSolution = wordList[randomIndex];
+    console.log(wordList);
+    console.log("Answer is:", selectedSolution);
+
+    return selectedSolution;
+  }
+  return;
+}

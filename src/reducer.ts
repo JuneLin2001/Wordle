@@ -23,13 +23,13 @@ const reducer = (state: State, action: Action): State => {
   switch (action.type) {
     case "SET_WORD":
       state.word = action.word;
-      return state;
+      return { ...state };
 
     case "ADD_GUESS":
       if (state.guesses.length < 5) {
         return { ...state, guesses: [...state.guesses, action.guess] };
       }
-      return state;
+      return { ...state };
 
     case "DELETE_GUESS":
       return { ...state, guesses: state.guesses.slice(0, -1) };
@@ -65,12 +65,11 @@ const reducer = (state: State, action: Action): State => {
           isCorrect,
         };
       }
-      return state;
+      return { ...state };
     }
     case "RESET":
       return {
         ...initialState,
-        word: state.word,
       };
     default:
       return state;
