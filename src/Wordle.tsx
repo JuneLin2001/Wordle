@@ -8,8 +8,10 @@ const Wordle: React.FC = () => {
   useEffect(() => {
     async function getSolution() {
       const solutionFromDb = await fetchWords();
+      const randomIndex = Math.floor(Math.random() * solutionFromDb.length);
+      const selectedAnswer = solutionFromDb[randomIndex];
       if (solutionFromDb) {
-        dispatch({ type: "SET_WORD", word: solutionFromDb });
+        dispatch({ type: "SET_WORD", word: selectedAnswer });
       }
     }
 
