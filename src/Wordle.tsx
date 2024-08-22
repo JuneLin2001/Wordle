@@ -9,16 +9,8 @@ const Wordle: React.FC = () => {
     console.log(import.meta.env.VITE_FIREBASE_API_KEY);
     async function getSolution() {
       const solutionFromDb = await fetchWords();
-      const randomIndex = Math.floor(Math.random() * solutionFromDb.length);
-      const selectedAnswer = solutionFromDb[randomIndex];
-      if (!import.meta.env.VITE_FIREBASE_API_KEY) {
-        const answerDatabase = ["DELAY", "CATCH", "SLEEP", "SOLVE", "SPLIT"];
-        const randomIndex = Math.floor(Math.random() * answerDatabase.length);
-        const selectedAnswer = answerDatabase[randomIndex];
-        dispatch({ type: "SET_WORD", word: selectedAnswer });
-      } else if (solutionFromDb) {
-        dispatch({ type: "SET_WORD", word: selectedAnswer });
-        console.log(selectedAnswer);
+      if (solutionFromDb) {
+        dispatch({ type: "SET_WORD", word: solutionFromDb });
       }
     }
     return () => {

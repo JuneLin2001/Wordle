@@ -12,9 +12,12 @@ export async function fetchWords() {
         wordList.push(word);
       }
     });
+    const randomIndex = Math.floor(Math.random() * wordList.length);
+    const selectedSolution = wordList[randomIndex];
     console.log(wordList);
+    console.log("Selected solution:", selectedSolution);
 
-    return wordList;
+    return selectedSolution;
   }
-  return [];
+  return;
 }
