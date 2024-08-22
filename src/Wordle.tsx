@@ -6,26 +6,24 @@ const Wordle: React.FC = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   useEffect(() => {
+    console.log(import.meta.env.VITE_FIREBASE_API_KEY);
     async function getSolution() {
-      try {
-        const solutionFromDb = await fetchWords();
-        if (solutionFromDb.length > 0) {
-          const randomIndex = Math.floor(Math.random() * solutionFromDb.length);
-          const selectedAnswer = solutionFromDb[randomIndex];
-          dispatch({ type: "SET_WORD", word: selectedAnswer });
-        } else {
-          throw new Error("No words found in the database");
-        }
-      } catch (error) {
-        console.error("Error fetching words:", error);
+      const solutionFromDb = await fetchWords();
+      const randomIndex = Math.floor(Math.random() * solutionFromDb.length);
+      const selectedAnswer = solutionFromDb[randomIndex];
+      if (!import.meta.env.VITE_FIREBASE_API_KEY) {
         const answerDatabase = ["DELAY", "CATCH", "SLEEP", "SOLVE", "SPLIT"];
         const randomIndex = Math.floor(Math.random() * answerDatabase.length);
         const selectedAnswer = answerDatabase[randomIndex];
         dispatch({ type: "SET_WORD", word: selectedAnswer });
+      } else if (solutionFromDb) {
+        dispatch({ type: "SET_WORD", word: selectedAnswer });
+        console.log(selectedAnswer);
       }
     }
-
-    getSolution();
+    return () => {
+      getSolution();
+    };
   }, []);
 
   useEffect(() => {
