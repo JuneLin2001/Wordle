@@ -5,18 +5,6 @@ import { fetchWords } from "./firebase";
 const Wordle: React.FC = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  // useEffect(() => {
-  //   async function getSolution() {
-  //     const solutionFromDb = await fetchWords();
-  //     if (solutionFromDb) {
-  //       dispatch({ type: "SET_WORD", word: solutionFromDb });
-  //     }
-  //   }
-  //   return () => {
-  //     getSolution();
-  //   };
-  // }, []);
-
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Backspace") {
@@ -52,9 +40,9 @@ const Wordle: React.FC = () => {
         dispatch({ type: "SET_WORD", word: solutionFromDb });
       }
     }
-    return () => {
+    if (state.status === "playing") {
       getSolution();
-    };
+    }
   }, [state.status]);
 
   return (
