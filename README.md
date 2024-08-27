@@ -1,10 +1,9 @@
-<div align="center"><img src="https://i.imgur.com/AbpRJtJ.png"/></div>
-
+<div align="center"><a href=https://junelin2001.github.io/Wordle/><img src="https://i.imgur.com/AbpRJtJ.png"/></a></div>
 
 
 ## About The Project
-trying make Wordle with React and TypeScript
-
+Trying make Wordle with React and TypeScript.  
+> [View Demo](https://junelin2001.github.io/Wordle/)
 
 ### Built With
 ![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)
